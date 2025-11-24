@@ -1,6 +1,15 @@
+[package]
+name = "rust-ue-tools"
+repository = "https://github.com/Rounak77382/rust-ue-tools"
+authors = ["Rounak"]
+license = "MIT"
+version = "0.1.0"
+edition = "2021"
+keywords = ["unreal-engine", "pak", "unrealpak"]
+
 [workspace]
 resolver = "2"
-members = ["repak-rivals/repak"]
+members = ["repak-rivals/repak", "repak-rivals/retoc-rivals"]
 
 [workspace.package]
 repository = "https://github.com/Rounak77382/rust-ue-tools"
@@ -19,6 +28,7 @@ hex = "0.4"
 
 # Additional dependencies
 tempfile = "3.8"
+walkdir = "2.5"
 
 # Compression and hashing
 sha2 = "0.10"
@@ -30,9 +40,44 @@ typed-path = "0.6"
 # PyO3 bindings for Python integration
 pyo3 = { version = "0.22", features = ["abi3"] }
 
+# CLI dependencies
+clap = { version = "4.0", features = ["derive", "cargo"] }
+
+[lib]
+name = "rust_ue_tools"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+pyo3 = ["dep:pyo3", "dep:walkdir", "dep:indicatif", "dep:rayon", "dep:zip"]
+
+[dependencies]
+# Main library dependencies
+tempfile.workspace = true
+walkdir = { workspace = true, optional = true }
+bitflags.workspace = true
+typed-path.workspace = true
+
 # UE file processing libraries
 repak = { path = "repak-rivals/repak", features = ["oodle"] }
 retoc = { path = "repak-rivals/retoc-rivals" }
 
+# Serialization and data processing
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hex.workspace = true
+base64.workspace = true
+
+# Error handling and utilities
+thiserror = "1.0"
+fs-err = "2.11"
+glob = "0.3"
+indicatif = { version = "0.17", optional = true }
+rayon = { version = "1.10", optional = true }
+zip = { version = "2.0", optional = true }
+
+# PyO3 bindings for Python integration
+pyo3 = { workspace = true, optional = true }
+
 # CLI dependencies
-clap = { version = "4.0", features = ["derive", "cargo"] }
+clap.workspace = true
