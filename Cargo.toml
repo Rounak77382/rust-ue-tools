@@ -9,7 +9,7 @@ keywords = ["unreal-engine", "pak", "unrealpak"]
 
 [workspace]
 resolver = "2"
-members = ["repak-rivals/repak", "repak-rivals/retoc-rivals"]
+members = ["repak-rivals/repak", "repak-rivals/retoc-rivals", "repak-rivals/oodle_loader"]
 
 [workspace.package]
 repository = "https://github.com/Rounak77382/rust-ue-tools"
