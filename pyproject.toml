@@ -31,6 +31,6 @@ Homepage = "https://github.com/Rounak77382/rust-ue-tools"
 Repository = "https://github.com/Rounak77382/rust-ue-tools"
 
 [tool.maturin]
-module-name = "rust_ue_tools._core"
+module-name = "rust_ue_tools"
 manifest-path = "Cargo.toml"
 features = ["pyo3"]
