@@ -45,7 +45,7 @@ clap = { version = "4.0", features = ["derive", "cargo"] }
 
 [lib]
 name = "rust_ue_tools"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [features]
 default = []
