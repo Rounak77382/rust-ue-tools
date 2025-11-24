@@ -1,7 +1,7 @@
 [submodule "retoc-rivals"]
 	path = repak-rivals/retoc-rivals
-	url = https://github.com/natimerry/retoc-rivals.git
+	url = https://github.com/Rounak77382/retoc-rivals.git
 	branch = master
 [submodule "repak-rivals"]
 	path = repak-rivals
-	url = https://github.com/natimerry/repak-rivals.git
+	url = https://github.com/Rounak77382/repak-rivals.git
