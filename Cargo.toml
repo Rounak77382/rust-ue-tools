@@ -38,14 +38,14 @@ bitflags = "2.4"
 typed-path = "0.6"
 
 # PyO3 bindings for Python integration
-pyo3 = { version = "0.22", features = ["abi3"] }
+pyo3 = { version = "0.22", features = ["abi3", "extension-module"] }
 
 # CLI dependencies
 clap = { version = "4.0", features = ["derive", "cargo"] }
 
 [lib]
 name = "rust_ue_tools"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 
 [features]
 default = []
