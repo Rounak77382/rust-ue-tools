@@ -16,7 +16,7 @@ Rust UE Tools is a unified Rust library that provides programmatic access to Unr
 
 **What this library does:**
 
-- **Unified Interface** — Combines multiple UE file processing tools from natimerry/retoc-rivals into one library
+- **Unified Interface** — Combines multiple UE file processing tools from Rounak77382/retoc-rivals into one library
 - **PAK Operations** — Leverages the `repak-rivals/repak/` submodule for `.pak` file processing
 - **UTOC Operations** — Leverages the `repak-rivals/retoc-rivals/` library for `.utoc` file operations and asset conversion
 - **Oodle Support** — Integrates Oodle compression via the `repak-rivals/oodle_loader/` submodule
@@ -386,7 +386,7 @@ This library integrates several excellent third-party projects:
 
 ### Core Dependencies
 
-All dependencies are from **[natimerry/repak-rivals](https://github.com/natimerry/repak-rivals)**:
+All dependencies are from **[Rounak77382/repak-rivals](https://github.com/Rounak77382/repak-rivals)**:
 
 - **`repak-rivals/repak/`** — PAK file processing library
 - **`repak-rivals/retoc-rivals/`** — UTOC file processing and asset conversion
