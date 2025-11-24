@@ -386,7 +386,7 @@ This library integrates several excellent third-party projects:
 
 ### Core Dependencies
 
-All dependencies are from **[natimerry/repak-rivals](https://github.com/natimerry/repak-rivals)**:
+All dependencies are from **[Rounak77382/repak-rivals](https://github.com/Rounak77382/repak-rivals)**:
 
 - **`repak-rivals/repak/`** — PAK file processing library
 - **`repak-rivals/retoc-rivals/`** — UTOC file processing and asset conversion
