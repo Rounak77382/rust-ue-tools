@@ -1,0 +1,77 @@
+[workspace]
+resolver = "2"
+members = ["repak-rivals/repak"]
+
+[workspace.package]
+repository = "https://github.com/Rounak77382/rust-ue-tools"
+authors = ["Rounak"]
+license = "MIT"
+version = "0.1.0"
+edition = "2021"
+keywords = ["unreal-engine", "pak", "unrealpak"]
+
+[workspace.dependencies]
+aes = "0.8.4"
+base64 = "0.22.1"
+strum = { version = "0.26", features = ["derive"] }
+sha1 = "0.10"
+hex = "0.4"
+
+# Crypto
+aes = "0.8"
+base64 = "0.21"
+hex = "0.4"
+sha1 = "0.10"
+strum = { version = "0.25", features = ["derive"] }
+
+# Additional dependencies
+tempfile = "3.8"
+
+# Compression and hashing
+sha2 = "0.10"
+
+# Binary serialization
+bitflags = "2.4"
+typed-path = "0.6"
+
+# PyO3 bindings for Python integration
+pyo3 = { version = "0.22", features = ["abi3"] }
+
+# UE file processing libraries
+<<<<<<< HEAD
+repak = { path = "repak-rivals/repak", features = ["oodle"] }
+retoc = { path = "repak-rivals/retoc-rivals" }
+=======
+repak = { path = "repak", features = ["oodle"] }
+retoc = { path = "retoc-rivals" }
+>>>>>>> 4607d513044355b88a71b53bd714cc167c118e7f
+
+# CLI dependencies
+clap = { version = "4.0", features = ["derive", "cargo"] }
+
+[features]
+default = []
+python-bindings = []
+pyo3 = []
+
+[profile.release]
+opt-level = 3
+debug = false
+strip = true
+lto = true
+
+[dev-dependencies]
+tempfile = "3.8"
+walkdir = "2.4"
+
+[[bin]]
+name = "ue-tools"
+path = "src/main.rs"
+
+[[bin]]
+name = "repak"
+path = "src/bin/repak.rs"
+
+[[bin]]
+name = "retoc"
+path = "src/bin/retoc.rs"
