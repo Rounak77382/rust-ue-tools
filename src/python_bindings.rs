@@ -88,16 +88,21 @@ impl PyUnpacker {
         let mut result_map: HashMap<String, Vec<String>> = HashMap::new();
 
         // Find all pak and utoc files
+        eprintln!("[DEBUG] Scanning folder: {}", folder_path);
         let mut pak_files = Vec::new();
         let mut utoc_files = Vec::new();
         
         for entry in WalkDir::new(folder_path) {
             match entry {
                 Ok(entry) if entry.file_type().is_file() => {
+                    eprintln!("[DEBUG] Found file: {}", entry.path().display());
                     if let Some(ext) = entry.path().extension().and_then(|e| e.to_str()) {
-                        if ext == "pak" {
+                        eprintln!("[DEBUG]   Extension: {}", ext);
+                        if ext.eq_ignore_ascii_case("pak") {
+                            eprintln!("[DEBUG]   -> Adding to pak_files");
                             pak_files.push(entry.path().to_path_buf());
-                        } else if ext == "utoc" {
+                        } else if ext.eq_ignore_ascii_case("utoc") {
+                            eprintln!("[DEBUG]   -> Adding to utoc_files");
                             utoc_files.push(entry.path().to_path_buf());
                         }
                     }
@@ -106,6 +111,7 @@ impl PyUnpacker {
             }
         }
 
+        eprintln!("[DEBUG] Found {} pak files and {} utoc files", pak_files.len(), utoc_files.len());
         // Process pak files
         for pak_path in &pak_files {
             let pak_name = pak_path.file_stem()
@@ -144,7 +150,7 @@ impl PyUnpacker {
                 Ok(assets) => {
                     let asset_paths: Vec<String> = assets.into_iter().map(|a| a.0).collect();
                     if !asset_paths.is_empty() {
-                        result_map.insert(pak_name.to_string(), asset_paths);
+                        result_map.insert(format!("{}.pak", pak_name), asset_paths);
                     }
                 }
                 Err(e) => {
@@ -159,20 +165,58 @@ impl PyUnpacker {
             json_format: false,
         };
 
+        eprintln!("[DEBUG] Processing {} utoc files", utoc_files.len());
         for utoc_path in &utoc_files {
             let utoc_name = utoc_path.file_stem()
                 .and_then(|s| s.to_str())
                 .unwrap_or("unknown");
 
+            eprintln!("[DEBUG] Processing UTOC: {}", utoc_path.display());
+            eprintln!("[DEBUG]   File exists: {}", utoc_path.exists());
+            eprintln!("[DEBUG]   File size: {:?}", utoc_path.metadata().map(|m| m.len()));
+            eprintln!("[DEBUG]   AES key available: {}", aes_key.is_some());
+
             match self.unpacker.list_utoc(utoc_path, &utoc_options) {
                 Ok(assets) => {
+                    eprintln!("[DEBUG]   UTOC parse SUCCESS: Found {} assets", assets.len());
                     let asset_paths: Vec<String> = assets.into_iter().map(|a| a.0).collect();
+                    
                     if !asset_paths.is_empty() {
+                        eprintln!("[DEBUG]   Inserting {}.utoc with {} assets", utoc_name, asset_paths.len());
                         result_map.insert(format!("{}.utoc", utoc_name), asset_paths);
+                    } else {
+                        // FALLBACK: If UTOC returns 0 assets, try reading from the PAK file instead
+                        eprintln!("[DEBUG]   WARNING: UTOC returned 0 assets, falling back to PAK file");
+                        
+                        // Find corresponding PAK file
+                        let pak_path = utoc_path.with_extension("pak");
+                        if pak_path.exists() {
+                            eprintln!("[DEBUG]   Found corresponding PAK file: {}", pak_path.display());
+                            
+                            match self.unpacker.get_pak_file_list(&pak_path, aes_key) {
+                                Ok(pak_assets) => {
+                                    eprintln!("[DEBUG]   PAK fallback SUCCESS: Found {} assets", pak_assets.len());
+                                    let pak_asset_paths: Vec<String> = pak_assets.into_iter().map(|a| a.0).collect();
+                                    
+                                    if !pak_asset_paths.is_empty() {
+                                        eprintln!("[DEBUG]   Inserting {}.utoc (from PAK) with {} assets", utoc_name, pak_asset_paths.len());
+                                        result_map.insert(format!("{}.utoc", utoc_name), pak_asset_paths);
+                                    } else {
+                                        eprintln!("[DEBUG]   WARNING: PAK file also returned 0 assets");
+                                    }
+                                }
+                                Err(e) => {
+                                    eprintln!("[ERROR] PAK fallback failed for {}: {}", pak_path.display(), e);
+                                }
+                            }
+                        } else {
+                            eprintln!("[DEBUG]   No corresponding PAK file found at: {}", pak_path.display());
+                        }
                     }
                 }
                 Err(e) => {
-                    eprintln!("Warning: Failed to list utoc file {}: {}", utoc_path.display(), e);
+                    eprintln!("[ERROR] Failed to list utoc file {}: {}", utoc_path.display(), e);
+                    eprintln!("[ERROR]   Error details: {:?}", e);
                 }
             }
         }
